@@ -17,14 +17,16 @@ type Item struct {
 	SaleDetails     []SaleDetail     `gorm:"many2many:Item_Sale;"`
 }
 
+type Items []Item
 type Supplier struct {
 	gorm.Model
-	SupplierName string `gorm:"type:varchar(255);not null;uniqueIndex"`
-	Address      string
-	Telp         string
-	Purchases    []Purchase
+	Name      string `gorm:"type:varchar(255);not null;uniqueIndex"`
+	Address   string
+	Telp      string
+	Purchases []Purchase
 }
 
+type Suppliers []Supplier
 type Purchase struct {
 	gorm.Model
 	SupplierID      string `gorm:"type:varchar(36)"`
@@ -33,6 +35,7 @@ type Purchase struct {
 	PurchaseDetails []PurchaseDetail
 }
 
+type Purchases []Purchase
 type PurchaseDetail struct {
 	gorm.Model
 	PurchaseID string `gorm:"type:varchar(36)"`
@@ -42,6 +45,7 @@ type PurchaseDetail struct {
 	UserID     string
 }
 
+type PurchaseDetails []PurchaseDetail
 type Sale struct {
 	gorm.Model
 	TotalPrice  int
@@ -49,6 +53,7 @@ type Sale struct {
 	SaleDetails []SaleDetail
 }
 
+type Sales []Sale
 type SaleDetail struct {
 	gorm.Model
 	SaleID    string `gorm:"type:varchar(36)"`
@@ -58,3 +63,5 @@ type SaleDetail struct {
 	UserID    string
 	UserRole  string
 }
+
+type SaleDetails []SaleDetail

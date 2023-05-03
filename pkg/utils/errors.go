@@ -50,7 +50,7 @@ var (
 	ErrUserNotFound = errors.New("user not found")
 
 	// ErrTemplateNotFound is used when the template is not found in the database
-	ErrTemplateNotFound = errors.New("template not found")
+	ErrItemAlreadyExist = errors.New("item with provided name already exist")
 
 	// ErrDuplicateTemplateName is used when the template name is already exist in the database
 	ErrDuplicateTemplateName = errors.New("template name already exist")
