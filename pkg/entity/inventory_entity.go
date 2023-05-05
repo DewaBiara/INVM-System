@@ -9,7 +9,7 @@ import (
 type Item struct {
 	gorm.Model
 	Name            string `gorm:"type:varchar(255);not null;uniqueIndex"`
-	Category        string `gorm:"type:varchar(255);not null;uniqueIndex"`
+	Category        string `gorm:"type:varchar(255);not null"`
 	Price           int
 	Stock           int
 	Description     string           `gorm:"type:varchar(255)"`
@@ -29,7 +29,7 @@ type Supplier struct {
 type Suppliers []Supplier
 type Purchase struct {
 	gorm.Model
-	SupplierID      string `gorm:"type:varchar(36)"`
+	SupplierID      uint
 	TotalPrice      int
 	Date            time.Time
 	PurchaseDetails []PurchaseDetail
@@ -38,8 +38,8 @@ type Purchase struct {
 type Purchases []Purchase
 type PurchaseDetail struct {
 	gorm.Model
-	PurchaseID string `gorm:"type:varchar(36)"`
-	ItemID     string `gorm:"type:varchar(36)"`
+	PurchaseID uint
+	ItemID     uint
 	TotalItem  int
 	Price      int
 	UserID     string
@@ -56,8 +56,8 @@ type Sale struct {
 type Sales []Sale
 type SaleDetail struct {
 	gorm.Model
-	SaleID    string `gorm:"type:varchar(36)"`
-	ItemID    string `gorm:"type:varchar(36)"`
+	SaleID    uint
+	ItemID    uint
 	TotalItem int
 	Price     int
 	UserID    string

@@ -1,6 +1,7 @@
 package routes
 
 import (
+	itemControllerPkg "github.com/DewaBiara/INVM-System/internal/inventory/controller"
 	userControllerPkg "github.com/DewaBiara/INVM-System/internal/user/controller"
 	"github.com/DewaBiara/INVM-System/pkg/utils/validation"
 	"github.com/go-playground/validator/v10"
@@ -10,11 +11,13 @@ import (
 
 type Routes struct {
 	userController *userControllerPkg.UserController
+	itemController *itemControllerPkg.ItemController
 }
 
-func NewRoutes(userController *userControllerPkg.UserController) *Routes {
+func NewRoutes(userController *userControllerPkg.UserController, itemController *itemControllerPkg.ItemController) *Routes {
 	return &Routes{
 		userController: userController,
+		itemController: itemController,
 	}
 }
 
@@ -38,4 +41,15 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	usersWithAuth := users.Group("", jwtMiddleware)
 	usersWithAuth.GET("/", r.userController.GetBriefUsers)
 	usersWithAuth.PUT("/", r.userController.UpdateUser)
+
+	// Items
+	items := v1.Group("/items")
+	items.POST("/", r.itemController.CreateItem)
+	items.PUT("/", r.itemController.UpdateItem)
+	items.GET("/:item_id/", r.itemController.GetSingleItem)
+	items.GET("/", r.itemController.GetPageItem)
+
+	// Suppliers
+	// Purchases
+	// Sales
 }

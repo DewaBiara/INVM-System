@@ -12,7 +12,6 @@ require (
 require github.com/stretchr/objx v0.5.0 // indirect
 
 require (
-	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/google/uuid v1.3.0
