@@ -3,9 +3,9 @@ package bootsrapper
 import (
 	"time"
 
-	itemControllerPkg "github.com/DewaBiara/INVM-System/internal/inventory/controller"
-	itemRepositoryPkg "github.com/DewaBiara/INVM-System/internal/inventory/repository/impl"
-	itemServicePkg "github.com/DewaBiara/INVM-System/internal/inventory/service/impl"
+	inventoryControllerPkg "github.com/DewaBiara/INVM-System/internal/inventory/controller"
+	inventoryRepositoryPkg "github.com/DewaBiara/INVM-System/internal/inventory/repository/impl"
+	inventoryServicePkg "github.com/DewaBiara/INVM-System/internal/inventory/service/impl"
 	userControllerPkg "github.com/DewaBiara/INVM-System/internal/user/controller"
 	userRepositoryPkg "github.com/DewaBiara/INVM-System/internal/user/repository/impl"
 	userServicePkg "github.com/DewaBiara/INVM-System/internal/user/service/impl"
@@ -27,10 +27,25 @@ func InitController(e *echo.Echo, db *gorm.DB, conf map[string]string) {
 	userController := userControllerPkg.NewUserController(userService, jwtService)
 
 	//Item
-	itemRepository := itemRepositoryPkg.NewItemRepositoryImpl(db)
-	itemService := itemServicePkg.NewItemServiceImpl(itemRepository)
-	itemController := itemControllerPkg.NewItemController(itemService)
+	itemRepository := inventoryRepositoryPkg.NewItemRepositoryImpl(db)
+	itemService := inventoryServicePkg.NewItemServiceImpl(itemRepository)
+	itemController := inventoryControllerPkg.NewItemController(itemService, jwtService)
 
-	route := routes.NewRoutes(userController, itemController)
+	//Supplier
+	supplierRepository := inventoryRepositoryPkg.NewSupplierRepositoryImpl(db)
+	supplierService := inventoryServicePkg.NewSupplierServiceImpl(supplierRepository)
+	supplierController := inventoryControllerPkg.NewSupplierController(supplierService, jwtService)
+
+	//Purchase
+	purchaseRepository := inventoryRepositoryPkg.NewPurchaseRepositoryImpl(db)
+	purchaseService := inventoryServicePkg.NewPurchaseServiceImpl(purchaseRepository)
+	purchaseController := inventoryControllerPkg.NewPurchaseController(purchaseService, jwtService)
+
+	//Sales
+	saleRepository := inventoryRepositoryPkg.NewSaleRepositoryImpl(db)
+	saleService := inventoryServicePkg.NewSaleServiceImpl(saleRepository)
+	saleController := inventoryControllerPkg.NewSaleController(saleService, jwtService)
+
+	route := routes.NewRoutes(userController, itemController, supplierController, purchaseController, saleController)
 	route.Init(e, conf)
 }

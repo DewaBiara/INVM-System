@@ -11,29 +11,29 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type ItemController struct {
-	itemService service.ItemService
+type SaleController struct {
+	saleService service.SaleService
 	jwtService  jwt_service.JWTService
 }
 
-func NewItemController(itemService service.ItemService, jwtService jwt_service.JWTService) *ItemController {
-	return &ItemController{
-		itemService: itemService,
+func NewSaleController(saleService service.SaleService, jwtService jwt_service.JWTService) *SaleController {
+	return &SaleController{
+		saleService: saleService,
 		jwtService:  jwtService,
 	}
 }
 
-func (u *ItemController) CreateItem(c echo.Context) error {
-	item := new(dto.CreateItemRequest)
-	if err := c.Bind(item); err != nil {
+func (u *SaleController) CreateSale(c echo.Context) error {
+	sale := new(dto.CreateSaleRequest)
+	if err := c.Bind(sale); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrBadRequestBody.Error())
 	}
 
-	if err := c.Validate(item); err != nil {
+	if err := c.Validate(sale); err != nil {
 		return err
 	}
 
-	err := u.itemService.CreateItem(c.Request().Context(), item)
+	err := u.saleService.CreateSale(c.Request().Context(), sale)
 
 	if err != nil {
 		switch err {
@@ -45,22 +45,22 @@ func (u *ItemController) CreateItem(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, echo.Map{
-		"message": "success creating item",
+		"message": "success creating sale",
 	})
 }
 
-func (u *ItemController) UpdateItem(c echo.Context) error {
+func (u *SaleController) UpdateSale(c echo.Context) error {
 
-	item := new(dto.UpdateItemRequest)
-	if err := c.Bind(item); err != nil {
+	sale := new(dto.UpdateSaleRequest)
+	if err := c.Bind(sale); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrBadRequestBody.Error())
 	}
 
-	if err := c.Validate(item); err != nil {
+	if err := c.Validate(sale); err != nil {
 		return err
 	}
 
-	err := u.itemService.UpdateItem(c.Request().Context(), item.ID, item)
+	err := u.saleService.UpdateSale(c.Request().Context(), sale.ID, sale)
 	if err != nil {
 		switch err {
 		case utils.ErrUserNotFound:
@@ -73,13 +73,13 @@ func (u *ItemController) UpdateItem(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{
-		"message": "success update item",
+		"message": "success update sale",
 	})
 }
 
-func (u *ItemController) GetSingleItem(c echo.Context) error {
-	itemID := c.Param("item_id")
-	item, err := u.itemService.GetSingleItem(c.Request().Context(), itemID)
+func (u *SaleController) GetSingleSale(c echo.Context) error {
+	saleID := c.Param("sale_id")
+	sale, err := u.saleService.GetSingleSale(c.Request().Context(), saleID)
 	if err != nil {
 		if err == utils.ErrDocumentNotFound {
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
@@ -96,15 +96,15 @@ func (u *ItemController) GetSingleItem(c echo.Context) error {
 		fallthrough
 	case role == "admin":
 		return c.JSON(http.StatusOK, echo.Map{
-			"message": "success getting item",
-			"data":    item,
+			"message": "success getting sale",
+			"data":    sale,
 		})
 	default:
 		return echo.NewHTTPError(http.StatusForbidden, utils.ErrDidntHavePermission.Error())
 	}
 }
 
-func (u *ItemController) GetPageItem(c echo.Context) error {
+func (u *SaleController) GetPageSale(c echo.Context) error {
 
 	page := c.QueryParam("page")
 	if page == "" {
@@ -124,7 +124,7 @@ func (u *ItemController) GetPageItem(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrInvalidNumber.Error())
 	}
 
-	item, err := u.itemService.GetPageItem(c.Request().Context(), int(pageInt), int(limitInt))
+	sale, err := u.saleService.GetPageSale(c.Request().Context(), int(pageInt), int(limitInt))
 	if err != nil {
 		if err == utils.ErrDocumentNotFound {
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
@@ -135,7 +135,7 @@ func (u *ItemController) GetPageItem(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, echo.Map{
 		"message": "success getting document",
-		"data":    item,
+		"data":    sale,
 		"meta": echo.Map{
 			"page":  pageInt,
 			"limit": limitInt,

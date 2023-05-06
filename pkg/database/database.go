@@ -42,8 +42,6 @@ func Migrate(db *gorm.DB) error {
 		&entity.Item{},
 		&entity.Supplier{},
 		&entity.Purchase{},
-		&entity.PurchaseDetail{},
 		&entity.Sale{},
-		&entity.SaleDetail{},
 	)
 }
