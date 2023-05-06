@@ -1,6 +1,9 @@
 package dto
 
-import "github.com/DewaBiara/INVM-System/pkg/entity"
+import (
+	"github.com/DewaBiara/INVM-System/pkg/entity"
+	"gorm.io/gorm"
+)
 
 type CreateItemRequest struct {
 	Name        string `json:"name" validate:"required"`
@@ -87,4 +90,51 @@ func NewGetPageItemsResponse(items *entity.Items) *GetPageItemsResponse {
 		getPageItems = append(getPageItems, *NewGetPageItemResponse(&items))
 	}
 	return &getPageItems
+}
+
+type ItemRequest struct {
+	ItemID uint `json:"itemid"`
+}
+
+type ItemRequests []ItemRequest
+
+func (r ItemRequest) ToEntity() *entity.Item {
+	return &entity.Item{
+		Model: gorm.Model{
+			ID: r.ItemID,
+		},
+	}
+}
+
+func (r *ItemRequests) ToEntity() *entity.Items {
+	items := entity.Items{}
+	for _, item := range *r {
+		items = append(items, *item.ToEntity())
+	}
+
+	return &items
+}
+
+type ItemResponse struct {
+	ItemID   uint   `json:"itemid"`
+	Name     string `json:"name"`
+	Category string `json:"catagory"`
+}
+
+func NewItemResponse(item *entity.Item) *ItemResponse {
+	return &ItemResponse{
+		ItemID:   item.ID,
+		Name:     item.Name,
+		Category: item.Category,
+	}
+}
+
+type ItemResponses []ItemResponse
+
+func NewItemResponses(items *entity.Items) *ItemResponses {
+	var itemResponses ItemResponses
+	for _, items := range *items {
+		itemResponses = append(itemResponses, *NewItemResponse(&items))
+	}
+	return &itemResponses
 }

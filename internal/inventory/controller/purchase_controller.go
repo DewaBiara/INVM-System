@@ -11,29 +11,29 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type ItemController struct {
-	itemService service.ItemService
-	jwtService  jwt_service.JWTService
+type PurchaseController struct {
+	purchaseService service.PurchaseService
+	jwtService      jwt_service.JWTService
 }
 
-func NewItemController(itemService service.ItemService, jwtService jwt_service.JWTService) *ItemController {
-	return &ItemController{
-		itemService: itemService,
-		jwtService:  jwtService,
+func NewPurchaseController(purchaseService service.PurchaseService, jwtService jwt_service.JWTService) *PurchaseController {
+	return &PurchaseController{
+		purchaseService: purchaseService,
+		jwtService:      jwtService,
 	}
 }
 
-func (u *ItemController) CreateItem(c echo.Context) error {
-	item := new(dto.CreateItemRequest)
-	if err := c.Bind(item); err != nil {
+func (u *PurchaseController) CreatePurchase(c echo.Context) error {
+	purchase := new(dto.CreatePurchaseRequest)
+	if err := c.Bind(purchase); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrBadRequestBody.Error())
 	}
 
-	if err := c.Validate(item); err != nil {
+	if err := c.Validate(purchase); err != nil {
 		return err
 	}
 
-	err := u.itemService.CreateItem(c.Request().Context(), item)
+	err := u.purchaseService.CreatePurchase(c.Request().Context(), purchase)
 
 	if err != nil {
 		switch err {
@@ -45,22 +45,22 @@ func (u *ItemController) CreateItem(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, echo.Map{
-		"message": "success creating item",
+		"message": "success creating purchase",
 	})
 }
 
-func (u *ItemController) UpdateItem(c echo.Context) error {
+func (u *PurchaseController) UpdatePurchase(c echo.Context) error {
 
-	item := new(dto.UpdateItemRequest)
-	if err := c.Bind(item); err != nil {
+	purchase := new(dto.UpdatePurchaseRequest)
+	if err := c.Bind(purchase); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrBadRequestBody.Error())
 	}
 
-	if err := c.Validate(item); err != nil {
+	if err := c.Validate(purchase); err != nil {
 		return err
 	}
 
-	err := u.itemService.UpdateItem(c.Request().Context(), item.ID, item)
+	err := u.purchaseService.UpdatePurchase(c.Request().Context(), purchase.ID, purchase)
 	if err != nil {
 		switch err {
 		case utils.ErrUserNotFound:
@@ -73,13 +73,13 @@ func (u *ItemController) UpdateItem(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{
-		"message": "success update item",
+		"message": "success update purchase",
 	})
 }
 
-func (u *ItemController) GetSingleItem(c echo.Context) error {
-	itemID := c.Param("item_id")
-	item, err := u.itemService.GetSingleItem(c.Request().Context(), itemID)
+func (u *PurchaseController) GetSinglePurchase(c echo.Context) error {
+	purchaseID := c.Param("purchase_id")
+	purchase, err := u.purchaseService.GetSinglePurchase(c.Request().Context(), purchaseID)
 	if err != nil {
 		if err == utils.ErrDocumentNotFound {
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
@@ -96,15 +96,15 @@ func (u *ItemController) GetSingleItem(c echo.Context) error {
 		fallthrough
 	case role == "admin":
 		return c.JSON(http.StatusOK, echo.Map{
-			"message": "success getting item",
-			"data":    item,
+			"message": "success getting purchase",
+			"data":    purchase,
 		})
 	default:
 		return echo.NewHTTPError(http.StatusForbidden, utils.ErrDidntHavePermission.Error())
 	}
 }
 
-func (u *ItemController) GetPageItem(c echo.Context) error {
+func (u *PurchaseController) GetPagePurchase(c echo.Context) error {
 
 	page := c.QueryParam("page")
 	if page == "" {
@@ -124,7 +124,7 @@ func (u *ItemController) GetPageItem(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrInvalidNumber.Error())
 	}
 
-	item, err := u.itemService.GetPageItem(c.Request().Context(), int(pageInt), int(limitInt))
+	purchase, err := u.purchaseService.GetPagePurchase(c.Request().Context(), int(pageInt), int(limitInt))
 	if err != nil {
 		if err == utils.ErrDocumentNotFound {
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
@@ -135,7 +135,7 @@ func (u *ItemController) GetPageItem(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, echo.Map{
 		"message": "success getting document",
-		"data":    item,
+		"data":    purchase,
 		"meta": echo.Map{
 			"page":  pageInt,
 			"limit": limitInt,

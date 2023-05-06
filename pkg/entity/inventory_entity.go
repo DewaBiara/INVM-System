@@ -8,13 +8,13 @@ import (
 
 type Item struct {
 	gorm.Model
-	Name            string `gorm:"type:varchar(255);not null;uniqueIndex"`
-	Category        string `gorm:"type:varchar(255);not null"`
-	Price           int
-	Stock           int
-	Description     string           `gorm:"type:varchar(255)"`
-	PurchaseDetails []PurchaseDetail `gorm:"many2many:Item_Purchase;"`
-	SaleDetails     []SaleDetail     `gorm:"many2many:Item_Sale;"`
+	Name        string `gorm:"type:varchar(255);not null;uniqueIndex"`
+	Category    string `gorm:"type:varchar(255);not null"`
+	Price       int
+	Stock       int
+	Description string    `gorm:"type:varchar(255)"`
+	Purchases   Purchases `gorm:"many2many:Item_Purchase;"`
+	Sales       Sales     `gorm:"many2many:Item_Sale;"`
 }
 
 type Items []Item
@@ -23,45 +23,30 @@ type Supplier struct {
 	Name      string `gorm:"type:varchar(255);not null;uniqueIndex"`
 	Address   string
 	Telp      string
-	Purchases []Purchase
+	Purchases Purchases
 }
 
 type Suppliers []Supplier
 type Purchase struct {
 	gorm.Model
-	SupplierID      uint
-	TotalPrice      int
-	Date            time.Time
-	PurchaseDetails []PurchaseDetail
-}
-
-type Purchases []Purchase
-type PurchaseDetail struct {
-	gorm.Model
-	PurchaseID uint
-	ItemID     uint
+	SupplierID uint
+	TotalPrice int
+	Date       time.Time
+	Items      *Items `gorm:"many2many:Item_Purchase;"`
 	TotalItem  int
 	Price      int
 	UserID     string
 }
 
-type PurchaseDetails []PurchaseDetail
+type Purchases []Purchase
 type Sale struct {
 	gorm.Model
-	TotalPrice  int
-	Date        time.Time
-	SaleDetails []SaleDetail
+	TotalPrice int
+	Date       time.Time
+	Items      *Items `gorm:"many2many:Item_Sale;"`
+	TotalItem  int
+	Price      int
+	UserID     string
 }
 
 type Sales []Sale
-type SaleDetail struct {
-	gorm.Model
-	SaleID    uint
-	ItemID    uint
-	TotalItem int
-	Price     int
-	UserID    string
-	UserRole  string
-}
-
-type SaleDetails []SaleDetail

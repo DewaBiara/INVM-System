@@ -16,9 +16,10 @@ type SupplierController struct {
 	jwtService      jwt_service.JWTService
 }
 
-func NewSupplierController(supplierService service.SupplierService) *SupplierController {
+func NewSupplierController(supplierService service.SupplierService, jwtService jwt_service.JWTService) *SupplierController {
 	return &SupplierController{
 		supplierService: supplierService,
+		jwtService:      jwtService,
 	}
 }
 
