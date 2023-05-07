@@ -11,4 +11,5 @@ type SaleRepository interface {
 	UpdateSale(ctx context.Context, sale *entity.Sale) error
 	GetSingleSale(ctx context.Context, saleID string) (*entity.Sale, error)
 	GetPageSale(ctx context.Context, limit int, offset int) (*entity.Sales, error)
+	DeleteSale(ctx context.Context, saleID string) error
 }

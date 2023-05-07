@@ -10,9 +10,6 @@ var (
 	// ErrInvalidCredentials is used when the user's credentials are invalid
 	ErrInvalidCredentials = errors.New("invalid username or password")
 
-	// ErrInvalidTemplateID is used when the template id is invalid or not found
-	ErrInvalidTemplateID = errors.New("invalid template id")
-
 	// ErrDidntHavePermission is used when the user doesn't have permission to access or modify the resource
 	ErrDidntHavePermission = errors.New("you didn't have permission to do this action")
 
@@ -40,20 +37,14 @@ var (
 	// ErrUsernameAlreadyExist is used when the username is already exist in the database
 	ErrUsernameAlreadyExist = errors.New("user with provided username already exist")
 
-	// ErrNIKAlreadyExist is used when the NIK is already exist in the database
-	ErrNIKAlreadyExist = errors.New("user with provided nik already exist")
-
-	// ErrNIPAlreadyExist is used when the NIP is already exist in the database
-	ErrNIPAlreadyExist = errors.New("user with provided nip already exist")
-
 	// ErrUserNotFound is used when the user is not found in the database
 	ErrUserNotFound = errors.New("user not found")
 
-	// ErrTemplateNotFound is used when the template is not found in the database
+	// ErrItemAlreadyExist is used when the item name is already exist in the database
 	ErrItemAlreadyExist = errors.New("item with provided name already exist")
 
-	// ErrDuplicateTemplateName is used when the template name is already exist in the database
-	ErrDuplicateTemplateName = errors.New("template name already exist")
+	// ErrSupplierAlreadyExist is used when the supplier name is already exist in the database
+	ErrSupplierAlreadyExist = errors.New("supplier with provided name already exist")
 
 	// ErrTemplateFieldNotFound is used when the template field is not found in the database
 	ErrTemplateFieldNotFound = errors.New("template field not found")
@@ -64,6 +55,15 @@ var (
 	// ErrDocumentNotFound is used when the document is not found in the database
 	ErrDocumentNotFound = errors.New("document not found")
 
-	// ErrFieldNotFound is used when document field is not found in the database
-	ErrFieldNotFound = errors.New("field not found")
+	// ErrItemNotFound is used when the item is not found in the database
+	ErrItemNotFound = errors.New("item not found")
+
+	// ErrSupplierNotFound is used when the supplier is not found in the database
+	ErrSupplierNotFound = errors.New("supplier not found")
+
+	// ErrPurchaseNotFound is used when the purchase is not found in the database
+	ErrPurchaseNotFound = errors.New("purchase not found")
+
+	// ErrSaleNotFound is used when the purchase is not found in the database
+	ErrSaleNotFound = errors.New("sale not found")
 )

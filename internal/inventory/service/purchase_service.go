@@ -11,4 +11,5 @@ type PurchaseService interface {
 	UpdatePurchase(ctx context.Context, purchaseID uint, updatePurchase *dto.UpdatePurchaseRequest) error
 	GetSinglePurchase(ctx context.Context, purchaseID string) (*dto.GetSinglePurchaseResponse, error)
 	GetPagePurchase(ctx context.Context, limit int, offset int) (*dto.GetPagePurchasesResponse, error)
+	DeletePurchase(ctx context.Context, purchaseID string) error
 }

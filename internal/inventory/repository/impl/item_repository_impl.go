@@ -91,3 +91,18 @@ func (u *ItemRepositoryImpl) UpdateItem(ctx context.Context, item *entity.Item) 
 
 	return nil
 }
+
+func (d *ItemRepositoryImpl) DeleteItem(ctx context.Context, itemID string) error {
+	result := d.db.WithContext(ctx).
+		Select("Item").
+		Delete(&entity.Item{}, "id = ?", itemID)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return utils.ErrDocumentNotFound
+	}
+
+	return nil
+}

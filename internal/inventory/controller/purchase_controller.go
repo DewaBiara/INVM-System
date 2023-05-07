@@ -36,12 +36,7 @@ func (u *PurchaseController) CreatePurchase(c echo.Context) error {
 	err := u.purchaseService.CreatePurchase(c.Request().Context(), purchase)
 
 	if err != nil {
-		switch err {
-		case utils.ErrUsernameAlreadyExist:
-			fallthrough
-		default:
-			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-		}
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSON(http.StatusCreated, echo.Map{
@@ -50,7 +45,11 @@ func (u *PurchaseController) CreatePurchase(c echo.Context) error {
 }
 
 func (u *PurchaseController) UpdatePurchase(c echo.Context) error {
-
+	claims := u.jwtService.GetClaims(&c)
+	role := claims["role"].(string)
+	if role != "admin" {
+		return echo.NewHTTPError(http.StatusForbidden, utils.ErrDidntHavePermission.Error())
+	}
 	purchase := new(dto.UpdatePurchaseRequest)
 	if err := c.Bind(purchase); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrBadRequestBody.Error())
@@ -63,10 +62,8 @@ func (u *PurchaseController) UpdatePurchase(c echo.Context) error {
 	err := u.purchaseService.UpdatePurchase(c.Request().Context(), purchase.ID, purchase)
 	if err != nil {
 		switch err {
-		case utils.ErrUserNotFound:
+		case utils.ErrPurchaseNotFound:
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
-		case utils.ErrUsernameAlreadyExist:
-			fallthrough
 		default:
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
@@ -81,7 +78,7 @@ func (u *PurchaseController) GetSinglePurchase(c echo.Context) error {
 	purchaseID := c.Param("purchase_id")
 	purchase, err := u.purchaseService.GetSinglePurchase(c.Request().Context(), purchaseID)
 	if err != nil {
-		if err == utils.ErrDocumentNotFound {
+		if err == utils.ErrPurchaseNotFound {
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
 		}
 
@@ -126,7 +123,7 @@ func (u *PurchaseController) GetPagePurchase(c echo.Context) error {
 
 	purchase, err := u.purchaseService.GetPagePurchase(c.Request().Context(), int(pageInt), int(limitInt))
 	if err != nil {
-		if err == utils.ErrDocumentNotFound {
+		if err == utils.ErrPurchaseNotFound {
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
 		}
 
@@ -140,5 +137,27 @@ func (u *PurchaseController) GetPagePurchase(c echo.Context) error {
 			"page":  pageInt,
 			"limit": limitInt,
 		},
+	})
+}
+
+func (d *PurchaseController) DeletePurchase(c echo.Context) error {
+	claims := d.jwtService.GetClaims(&c)
+	role := claims["role"].(string)
+	if role != "admin" {
+		return echo.NewHTTPError(http.StatusForbidden, utils.ErrDidntHavePermission.Error())
+	}
+	purchaseID := c.Param("purchase_id")
+	err := d.purchaseService.DeletePurchase(c.Request().Context(), purchaseID)
+	if err != nil {
+		switch err {
+		case utils.ErrPurchaseNotFound:
+			return echo.NewHTTPError(http.StatusNotFound, err.Error())
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"message": "success deleting purchase",
 	})
 }

@@ -91,3 +91,18 @@ func (u *SupplierRepositoryImpl) UpdateSupplier(ctx context.Context, supplier *e
 
 	return nil
 }
+
+func (d *SupplierRepositoryImpl) DeleteSupplier(ctx context.Context, supplierID string) error {
+	result := d.db.WithContext(ctx).
+		Select("Supplier").
+		Delete(&entity.Supplier{}, "id = ?", supplierID)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return utils.ErrDocumentNotFound
+	}
+
+	return nil
+}

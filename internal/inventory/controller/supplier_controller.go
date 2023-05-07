@@ -24,6 +24,11 @@ func NewSupplierController(supplierService service.SupplierService, jwtService j
 }
 
 func (u *SupplierController) CreateSupplier(c echo.Context) error {
+	claims := u.jwtService.GetClaims(&c)
+	role := claims["role"].(string)
+	if role != "admin" {
+		return echo.NewHTTPError(http.StatusForbidden, utils.ErrDidntHavePermission.Error())
+	}
 	supplier := new(dto.CreateSupplierRequest)
 	if err := c.Bind(supplier); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrBadRequestBody.Error())
@@ -37,7 +42,7 @@ func (u *SupplierController) CreateSupplier(c echo.Context) error {
 
 	if err != nil {
 		switch err {
-		case utils.ErrUsernameAlreadyExist:
+		case utils.ErrSupplierAlreadyExist:
 			fallthrough
 		default:
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
@@ -50,7 +55,11 @@ func (u *SupplierController) CreateSupplier(c echo.Context) error {
 }
 
 func (u *SupplierController) UpdateSupplier(c echo.Context) error {
-
+	claims := u.jwtService.GetClaims(&c)
+	role := claims["role"].(string)
+	if role != "admin" {
+		return echo.NewHTTPError(http.StatusForbidden, utils.ErrDidntHavePermission.Error())
+	}
 	supplier := new(dto.UpdateSupplierRequest)
 	if err := c.Bind(supplier); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrBadRequestBody.Error())
@@ -63,9 +72,9 @@ func (u *SupplierController) UpdateSupplier(c echo.Context) error {
 	err := u.supplierService.UpdateSupplier(c.Request().Context(), supplier.ID, supplier)
 	if err != nil {
 		switch err {
-		case utils.ErrUserNotFound:
+		case utils.ErrSupplierNotFound:
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
-		case utils.ErrUsernameAlreadyExist:
+		case utils.ErrSupplierAlreadyExist:
 			fallthrough
 		default:
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
@@ -81,7 +90,7 @@ func (u *SupplierController) GetSingleSupplier(c echo.Context) error {
 	supplierID := c.Param("supplier_id")
 	supplier, err := u.supplierService.GetSingleSupplier(c.Request().Context(), supplierID)
 	if err != nil {
-		if err == utils.ErrDocumentNotFound {
+		if err == utils.ErrSupplierNotFound {
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
 		}
 
@@ -126,7 +135,7 @@ func (u *SupplierController) GetPageSupplier(c echo.Context) error {
 
 	supplier, err := u.supplierService.GetPageSupplier(c.Request().Context(), int(pageInt), int(limitInt))
 	if err != nil {
-		if err == utils.ErrDocumentNotFound {
+		if err == utils.ErrSupplierNotFound {
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
 		}
 
@@ -140,5 +149,27 @@ func (u *SupplierController) GetPageSupplier(c echo.Context) error {
 			"page":  pageInt,
 			"limit": limitInt,
 		},
+	})
+}
+
+func (d *SupplierController) DeleteSupplier(c echo.Context) error {
+	claims := d.jwtService.GetClaims(&c)
+	role := claims["role"].(string)
+	if role != "admin" {
+		return echo.NewHTTPError(http.StatusForbidden, utils.ErrDidntHavePermission.Error())
+	}
+	supplierID := c.Param("supplier_id")
+	err := d.supplierService.DeleteSupplier(c.Request().Context(), supplierID)
+	if err != nil {
+		switch err {
+		case utils.ErrSupplierNotFound:
+			return echo.NewHTTPError(http.StatusNotFound, err.Error())
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"message": "success deleting supplier",
 	})
 }

@@ -36,12 +36,7 @@ func (u *SaleController) CreateSale(c echo.Context) error {
 	err := u.saleService.CreateSale(c.Request().Context(), sale)
 
 	if err != nil {
-		switch err {
-		case utils.ErrUsernameAlreadyExist:
-			fallthrough
-		default:
-			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-		}
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSON(http.StatusCreated, echo.Map{
@@ -50,7 +45,11 @@ func (u *SaleController) CreateSale(c echo.Context) error {
 }
 
 func (u *SaleController) UpdateSale(c echo.Context) error {
-
+	claims := u.jwtService.GetClaims(&c)
+	role := claims["role"].(string)
+	if role != "admin" {
+		return echo.NewHTTPError(http.StatusForbidden, utils.ErrDidntHavePermission.Error())
+	}
 	sale := new(dto.UpdateSaleRequest)
 	if err := c.Bind(sale); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrBadRequestBody.Error())
@@ -63,10 +62,8 @@ func (u *SaleController) UpdateSale(c echo.Context) error {
 	err := u.saleService.UpdateSale(c.Request().Context(), sale.ID, sale)
 	if err != nil {
 		switch err {
-		case utils.ErrUserNotFound:
+		case utils.ErrSaleNotFound:
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
-		case utils.ErrUsernameAlreadyExist:
-			fallthrough
 		default:
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
@@ -81,7 +78,7 @@ func (u *SaleController) GetSingleSale(c echo.Context) error {
 	saleID := c.Param("sale_id")
 	sale, err := u.saleService.GetSingleSale(c.Request().Context(), saleID)
 	if err != nil {
-		if err == utils.ErrDocumentNotFound {
+		if err == utils.ErrSaleNotFound {
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
 		}
 
@@ -126,7 +123,7 @@ func (u *SaleController) GetPageSale(c echo.Context) error {
 
 	sale, err := u.saleService.GetPageSale(c.Request().Context(), int(pageInt), int(limitInt))
 	if err != nil {
-		if err == utils.ErrDocumentNotFound {
+		if err == utils.ErrSaleNotFound {
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
 		}
 
@@ -140,5 +137,27 @@ func (u *SaleController) GetPageSale(c echo.Context) error {
 			"page":  pageInt,
 			"limit": limitInt,
 		},
+	})
+}
+
+func (d *SaleController) DeleteSale(c echo.Context) error {
+	claims := d.jwtService.GetClaims(&c)
+	role := claims["role"].(string)
+	if role != "admin" {
+		return echo.NewHTTPError(http.StatusForbidden, utils.ErrDidntHavePermission.Error())
+	}
+	saleID := c.Param("sale_id")
+	err := d.saleService.DeleteSale(c.Request().Context(), saleID)
+	if err != nil {
+		switch err {
+		case utils.ErrSaleNotFound:
+			return echo.NewHTTPError(http.StatusNotFound, err.Error())
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"message": "success deleting sale",
 	})
 }

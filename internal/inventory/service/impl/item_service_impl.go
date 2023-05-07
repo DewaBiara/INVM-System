@@ -62,3 +62,8 @@ func (u *ItemServiceImpl) UpdateItem(ctx context.Context, itemID uint, updateIte
 
 	return u.itemRepository.UpdateItem(ctx, item)
 }
+
+func (d *ItemServiceImpl) DeleteItem(ctx context.Context, itemID string) error {
+
+	return d.itemRepository.DeleteItem(ctx, itemID)
+}
