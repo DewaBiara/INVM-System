@@ -63,7 +63,7 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	suppliers.PUT("/", r.supplierController.UpdateSupplier, jwtMiddleware)
 	suppliers.GET("/:supplier_id/", r.supplierController.GetSingleSupplier, jwtMiddleware)
 	suppliers.GET("/", r.supplierController.GetPageSupplier)
-	suppliers.DELETE("/:supplier_id/", r.supplierController.DeleteSupplier)
+	suppliers.DELETE("/:supplier_id/", r.supplierController.DeleteSupplier, jwtMiddleware)
 
 	// Purchases
 	purchases := v1.Group("/purchases")

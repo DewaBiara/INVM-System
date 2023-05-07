@@ -162,7 +162,7 @@ func (d *SupplierController) DeleteSupplier(c echo.Context) error {
 	err := d.supplierService.DeleteSupplier(c.Request().Context(), supplierID)
 	if err != nil {
 		switch err {
-		case utils.ErrSupplierNotFound:
+		case utils.ErrItemNotFound:
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
 		default:
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())

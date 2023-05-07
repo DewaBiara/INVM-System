@@ -47,7 +47,7 @@ func (u *PurchaseRepositoryImpl) GetSinglePurchase(ctx context.Context, purchase
 		First(&purchase).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, utils.ErrUserNotFound
+			return nil, utils.ErrPurchaseNotFound
 		}
 
 		return nil, err
@@ -68,7 +68,7 @@ func (u *PurchaseRepositoryImpl) GetPagePurchase(ctx context.Context, limit int,
 	}
 
 	if len(purchases) == 0 {
-		return nil, utils.ErrUserNotFound
+		return nil, utils.ErrPurchaseNotFound
 	}
 
 	return &purchases, nil
@@ -81,7 +81,7 @@ func (u *PurchaseRepositoryImpl) UpdatePurchase(ctx context.Context, purchase *e
 		if strings.Contains(errStr, "Error 1062: Duplicate entry") {
 			switch {
 			case strings.Contains(errStr, "name"):
-				return utils.ErrUsernameAlreadyExist
+				return utils.ErrItemAlreadyExist
 			}
 		}
 
@@ -89,7 +89,7 @@ func (u *PurchaseRepositoryImpl) UpdatePurchase(ctx context.Context, purchase *e
 	}
 
 	if result.RowsAffected == 0 {
-		return utils.ErrUserNotFound
+		return utils.ErrPurchaseNotFound
 	}
 
 	return nil
@@ -104,7 +104,7 @@ func (d *PurchaseRepositoryImpl) DeletePurchase(ctx context.Context, purchaseID 
 	}
 
 	if result.RowsAffected == 0 {
-		return utils.ErrDocumentNotFound
+		return utils.ErrPurchaseNotFound
 	}
 
 	return nil

@@ -11,6 +11,7 @@ type CreateItemRequest struct {
 	Price       int    `json:"price"`
 	Stock       int    `json:"stock"`
 	Description string `json:"description"`
+	CreatedBy   string `json:"createdby"`
 }
 
 func (u *CreateItemRequest) ToEntity() *entity.Item {
@@ -20,6 +21,7 @@ func (u *CreateItemRequest) ToEntity() *entity.Item {
 		Price:       u.Price,
 		Stock:       u.Stock,
 		Description: u.Description,
+		CreatedBy:   u.CreatedBy,
 	}
 }
 
@@ -30,6 +32,7 @@ type UpdateItemRequest struct {
 	Price       int    `json:"price"`
 	Stock       int    `json:"stock"`
 	Description string `json:"description"`
+	UpdatedBy   string `json:"updatedby"`
 }
 
 func (u *UpdateItemRequest) ToEntity() *entity.Item {
@@ -39,6 +42,7 @@ func (u *UpdateItemRequest) ToEntity() *entity.Item {
 		Price:       u.Price,
 		Stock:       u.Stock,
 		Description: u.Description,
+		UpdatedBy:   u.UpdatedBy,
 	}
 }
 
@@ -49,6 +53,8 @@ type GetSingleItemResponse struct {
 	Price       int    `json:"price"`
 	Stock       int    `json:"stock"`
 	Description string `json:"description"`
+	CreatedBy   string `json:"createdby"`
+	UpdatedBy   string `json:"updatedby"`
 }
 
 func NewGetSingleItemResponse(item *entity.Item) *GetSingleItemResponse {
@@ -59,6 +65,8 @@ func NewGetSingleItemResponse(item *entity.Item) *GetSingleItemResponse {
 		Price:       item.Price,
 		Stock:       item.Stock,
 		Description: item.Description,
+		CreatedBy:   item.CreatedBy,
+		UpdatedBy:   item.UpdatedBy,
 	}
 }
 
@@ -69,6 +77,8 @@ type GetPageItemResponse struct {
 	Price       int    `json:"price"`
 	Stock       int    `json:"stock"`
 	Description string `json:"description"`
+	CreatedBy   string `json:"createdby"`
+	UpdatedBy   string `json:"updatedby"`
 }
 
 func NewGetPageItemResponse(item *entity.Item) *GetPageItemResponse {
@@ -79,6 +89,8 @@ func NewGetPageItemResponse(item *entity.Item) *GetPageItemResponse {
 		Price:       item.Price,
 		Stock:       item.Stock,
 		Description: item.Description,
+		CreatedBy:   item.CreatedBy,
+		UpdatedBy:   item.UpdatedBy,
 	}
 }
 

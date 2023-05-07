@@ -15,6 +15,8 @@ type Item struct {
 	Description string    `gorm:"type:varchar(255)"`
 	Purchases   Purchases `gorm:"many2many:Item_Purchase;"`
 	Sales       Sales     `gorm:"many2many:Item_Sale;"`
+	CreatedBy   string    `gorm:"type:varchar(255)"`
+	UpdatedBy   string    `gorm:"type:varchar(255)"`
 }
 
 type Items []Item
@@ -23,6 +25,8 @@ type Supplier struct {
 	Name      string `gorm:"type:varchar(255);not null;uniqueIndex"`
 	Address   string
 	Telp      string
+	CreatedBy string `gorm:"type:varchar(255)"`
+	UpdatedBy string `gorm:"type:varchar(255)"`
 	Purchases Purchases
 }
 
