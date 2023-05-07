@@ -11,4 +11,5 @@ type ItemRepository interface {
 	UpdateItem(ctx context.Context, item *entity.Item) error
 	GetSingleItem(ctx context.Context, itemID string) (*entity.Item, error)
 	GetPageItem(ctx context.Context, limit int, offset int) (*entity.Items, error)
+	DeleteItem(ctx context.Context, itemID string) error
 }

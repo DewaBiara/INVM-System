@@ -94,3 +94,18 @@ func (u *PurchaseRepositoryImpl) UpdatePurchase(ctx context.Context, purchase *e
 
 	return nil
 }
+
+func (d *PurchaseRepositoryImpl) DeletePurchase(ctx context.Context, purchaseID string) error {
+	result := d.db.WithContext(ctx).
+		Select("Purchase").
+		Delete(&entity.Purchase{}, "id = ?", purchaseID)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return utils.ErrDocumentNotFound
+	}
+
+	return nil
+}

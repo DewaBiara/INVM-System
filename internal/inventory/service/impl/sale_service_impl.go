@@ -62,3 +62,8 @@ func (u *SaleServiceImpl) UpdateSale(ctx context.Context, saleID uint, updateSal
 
 	return u.saleRepository.UpdateSale(ctx, sale)
 }
+
+func (d *SaleServiceImpl) DeleteSale(ctx context.Context, saleID string) error {
+
+	return d.saleRepository.DeleteSale(ctx, saleID)
+}

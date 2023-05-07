@@ -62,3 +62,8 @@ func (u *PurchaseServiceImpl) UpdatePurchase(ctx context.Context, purchaseID uin
 
 	return u.purchaseRepository.UpdatePurchase(ctx, purchase)
 }
+
+func (d *PurchaseServiceImpl) DeletePurchase(ctx context.Context, purchaseID string) error {
+
+	return d.purchaseRepository.DeletePurchase(ctx, purchaseID)
+}

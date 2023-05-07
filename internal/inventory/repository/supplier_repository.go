@@ -11,4 +11,5 @@ type SupplierRepository interface {
 	UpdateSupplier(ctx context.Context, supplier *entity.Supplier) error
 	GetSingleSupplier(ctx context.Context, supplierID string) (*entity.Supplier, error)
 	GetPageSupplier(ctx context.Context, limit int, offset int) (*entity.Suppliers, error)
+	DeleteSupplier(ctx context.Context, supplierID string) error
 }

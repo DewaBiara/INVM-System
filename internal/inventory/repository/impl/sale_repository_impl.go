@@ -93,3 +93,18 @@ func (u *SaleRepositoryImpl) UpdateSale(ctx context.Context, sale *entity.Sale) 
 
 	return nil
 }
+
+func (d *SaleRepositoryImpl) DeleteSale(ctx context.Context, saleID string) error {
+	result := d.db.WithContext(ctx).
+		Select("Sale").
+		Delete(&entity.Sale{}, "id = ?", saleID)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return utils.ErrDocumentNotFound
+	}
+
+	return nil
+}

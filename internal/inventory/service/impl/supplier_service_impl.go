@@ -62,3 +62,8 @@ func (u *SupplierServiceImpl) UpdateSupplier(ctx context.Context, supplierID uin
 
 	return u.supplierRepository.UpdateSupplier(ctx, supplier)
 }
+
+func (d *SupplierServiceImpl) DeleteSupplier(ctx context.Context, supplierID string) error {
+
+	return d.supplierRepository.DeleteSupplier(ctx, supplierID)
+}
