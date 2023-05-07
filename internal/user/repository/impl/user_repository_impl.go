@@ -104,10 +104,6 @@ func (u *UserRepositoryImpl) UpdateUser(ctx context.Context, user *entity.User) 
 			switch {
 			case strings.Contains(errStr, "username"):
 				return utils.ErrUsernameAlreadyExist
-			case strings.Contains(errStr, "n_ip"):
-				return utils.ErrNIPAlreadyExist
-			case strings.Contains(errStr, "nik"):
-				return utils.ErrNIKAlreadyExist
 			}
 		}
 

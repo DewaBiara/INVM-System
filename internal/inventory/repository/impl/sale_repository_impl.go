@@ -46,7 +46,7 @@ func (u *SaleRepositoryImpl) GetSingleSale(ctx context.Context, saleID string) (
 		First(&sale).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, utils.ErrUserNotFound
+			return nil, utils.ErrSaleNotFound
 		}
 
 		return nil, err
@@ -67,7 +67,7 @@ func (u *SaleRepositoryImpl) GetPageSale(ctx context.Context, limit int, offset 
 	}
 
 	if len(sales) == 0 {
-		return nil, utils.ErrUserNotFound
+		return nil, utils.ErrSaleNotFound
 	}
 
 	return &sales, nil
@@ -80,7 +80,7 @@ func (u *SaleRepositoryImpl) UpdateSale(ctx context.Context, sale *entity.Sale) 
 		if strings.Contains(errStr, "Error 1062: Duplicate entry") {
 			switch {
 			case strings.Contains(errStr, "name"):
-				return utils.ErrUsernameAlreadyExist
+				return utils.ErrItemAlreadyExist
 			}
 		}
 
@@ -88,7 +88,7 @@ func (u *SaleRepositoryImpl) UpdateSale(ctx context.Context, sale *entity.Sale) 
 	}
 
 	if result.RowsAffected == 0 {
-		return utils.ErrUserNotFound
+		return utils.ErrSaleNotFound
 	}
 
 	return nil
@@ -103,7 +103,7 @@ func (d *SaleRepositoryImpl) DeleteSale(ctx context.Context, saleID string) erro
 	}
 
 	if result.RowsAffected == 0 {
-		return utils.ErrDocumentNotFound
+		return utils.ErrSaleNotFound
 	}
 
 	return nil

@@ -28,7 +28,7 @@ func (u *SupplierRepositoryImpl) CreateSupplier(ctx context.Context, supplier *e
 		if strings.Contains(err.Error(), "Error 1062: Duplicate entry") {
 			switch {
 			case strings.Contains(err.Error(), "name"):
-				return utils.ErrItemAlreadyExist
+				return utils.ErrSupplierAlreadyExist
 			}
 		}
 
@@ -40,10 +40,10 @@ func (u *SupplierRepositoryImpl) CreateSupplier(ctx context.Context, supplier *e
 
 func (u *SupplierRepositoryImpl) GetSingleSupplier(ctx context.Context, supplierID string) (*entity.Supplier, error) {
 	var supplier entity.Supplier
-	err := u.db.WithContext(ctx).Select([]string{"id", "name", "address", "telp"}).Where("id = ?", supplierID).First(&supplier).Error
+	err := u.db.WithContext(ctx).Where("id = ?", supplierID).First(&supplier).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, utils.ErrUserNotFound
+			return nil, utils.ErrSupplierNotFound
 		}
 
 		return nil, err
@@ -55,7 +55,6 @@ func (u *SupplierRepositoryImpl) GetSingleSupplier(ctx context.Context, supplier
 func (u *SupplierRepositoryImpl) GetPageSupplier(ctx context.Context, limit int, offset int) (*entity.Suppliers, error) {
 	var suppliers entity.Suppliers
 	err := u.db.WithContext(ctx).
-		Select([]string{"id", "name", "address", "telp"}).
 		Order("created_at DESC").
 		Offset(offset).
 		Limit(limit).
@@ -65,7 +64,7 @@ func (u *SupplierRepositoryImpl) GetPageSupplier(ctx context.Context, limit int,
 	}
 
 	if len(suppliers) == 0 {
-		return nil, utils.ErrUserNotFound
+		return nil, utils.ErrSupplierNotFound
 	}
 
 	return &suppliers, nil
@@ -78,7 +77,7 @@ func (u *SupplierRepositoryImpl) UpdateSupplier(ctx context.Context, supplier *e
 		if strings.Contains(errStr, "Error 1062: Duplicate entry") {
 			switch {
 			case strings.Contains(errStr, "name"):
-				return utils.ErrUsernameAlreadyExist
+				return utils.ErrSupplierAlreadyExist
 			}
 		}
 
@@ -86,7 +85,7 @@ func (u *SupplierRepositoryImpl) UpdateSupplier(ctx context.Context, supplier *e
 	}
 
 	if result.RowsAffected == 0 {
-		return utils.ErrUserNotFound
+		return utils.ErrSupplierNotFound
 	}
 
 	return nil
@@ -101,7 +100,7 @@ func (d *SupplierRepositoryImpl) DeleteSupplier(ctx context.Context, supplierID 
 	}
 
 	if result.RowsAffected == 0 {
-		return utils.ErrDocumentNotFound
+		return utils.ErrSupplierNotFound
 	}
 
 	return nil
