@@ -45,23 +45,6 @@ func (u *UserUpdateRequest) ToEntity() *entity.User {
 	}
 }
 
-type EmployeeResponse struct {
-	ID       string `json:"id,omitempty"`
-	Username string `json:"username,omitempty"`
-	Name     string `json:"name,omitempty"`
-	NIP      string `json:"nip,omitempty"`
-	Position string `json:"position,omitempty"`
-}
-
-func NewEmployeeResponse(user *entity.User) *EmployeeResponse {
-	return &EmployeeResponse{
-		ID:       user.ID,
-		Username: user.Username,
-		Name:     user.Name,
-		Position: user.Position,
-	}
-}
-
 type BriefUserResponse struct {
 	ID       string `json:"id"`
 	Username string `json:"username"`

@@ -78,7 +78,7 @@ func (u *UserController) GetBriefUsers(c echo.Context) error {
 	claims := u.jwtService.GetClaims(&c)
 	role := claims["role"].(string)
 
-	if role == "member" {
+	if role == "pegawai" {
 		return echo.NewHTTPError(http.StatusForbidden, utils.ErrDidntHavePermission.Error())
 	}
 
